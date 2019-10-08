@@ -35,11 +35,11 @@ Si quieres cambiar los puertos de la api pública y administrativa puedes modifi
 
 ## 2. Asegurando la api administrativa
 
-Pasa que no puedes dejar el acceso a la api administrativa asi nada más imaginate se mete cualquiera, para lo cual vamos a hacer algo asi, registrar la misma api admistrativa a algo mas legible detras de la api pública, tipo
+Pasa que no puedes dejar el acceso a la api administrativa asi nada más imaginate se mete cualquiera. Entonces vamos a hacer algo interesante, registrar la misma api admistrativa a algo mas legible detras de la api pública, tipo
 ```
 localhost:8000/admin-kong
 ```
-y nos tiene que salir el mismo resultado que hicimos al consumir el endpoint *localhost:8001*
+y nos tendria que mandar el mismo resultado que vemos al consumir el endpoint *localhost:8001*
 
 Y para ponerle al menos una capa de seguridad le vamos a agregar el plugin JWT que nos ofrece kong, de esa manera vamos a necesitar un token para consumir esta api.
 
@@ -50,4 +50,4 @@ Todos estos pasos los podemos hacer realizando curls a la api administrativa, pe
 $ ansible-playbook curl-kong.yaml
 ```
 
-Y listo, ya tenemos nuestro propio kong levantando y esperando ser de mucha utilidad administrando multitud de apis utilizando su bonito ecosistema de plugins
+Y listo, ya tenemos nuestro propio kong levantando y listo para administrar cuantas apis se nos cante...
