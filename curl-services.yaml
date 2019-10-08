@@ -1,0 +1,97 @@
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: Registrar servicio rick and morty
+      uri:
+        url: http://localhost:8001/services
+        method: POST
+        body:
+          name: rm-service
+          protocol: http
+          host: rickandmortyapi.com
+          path: null
+          port: 80
+          tags: [rm-services]
+        body_format: json
+        status_code: 201, 409
+
+    - name: Registrar ruta info de servicio Rick and Morty
+      uri:
+        url: http://localhost:8001/services/rm-service/routes
+        method: POST
+        body:
+          name: api-info
+          protocols: [http]
+          methods: [GET]
+          hosts: null
+          paths: [/api]
+          strip_path: false
+          preserve_host: false
+          tags: ['rm-services']
+        body_format: json
+        status_code: 201, 409
+
+    - name: Registrar ruta info de characters Rick and Morty
+      uri:
+        url: http://localhost:8001/services/rm-service/routes
+        method: POST
+        body:
+          name: api-character-rm
+          protocols: [http]
+          methods: [GET]
+          hosts: null
+          paths: [/api/character$]
+          strip_path: false
+          preserve_host: false
+          tags: ['rm-services']
+        body_format: json
+        status_code: 201, 409
+
+    - name: Registrar ruta info de characters Rick and Morty
+      uri:
+        url: http://localhost:8001/services/rm-service/routes
+        method: POST
+        body:
+          name: api-character-rm
+          protocols: [http]
+          methods: [GET]
+          hosts: null
+          paths: [/api/character$]
+          strip_path: false
+          preserve_host: false
+          tags: ['rm-services']
+        body_format: json
+        status_code: 201, 409
+
+
+    - name: Registrar ruta info de locations Rick and Morty
+      uri:
+        url: http://localhost:8001/services/rm-service/routes
+        method: POST
+        body:
+          name: api-location-rm
+          protocols: [http]
+          methods: [GET]
+          hosts: null
+          paths: [/api/location$]
+          strip_path: false
+          preserve_host: false
+          tags: ['rm-services']
+        body_format: json
+        status_code: 201, 409
+
+    - name: Registrar ruta info de servicio Rick and Morty
+      uri:
+        url: http://localhost:8001/services/rm-service/routes
+        method: POST
+        body:
+          name: api-episodes-rm
+          protocols: [http]
+          methods: [GET]
+          hosts: null
+          paths: [/api/episode$]
+          strip_path: false
+          preserve_host: false
+          tags: ['rm-services']
+        body_format: json
+        status_code: 201, 409

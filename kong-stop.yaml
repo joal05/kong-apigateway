@@ -1,0 +1,19 @@
+- hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+    - name: Deteniendo container Kong
+      docker_container:
+        name: kong
+        state: absent
+        force_kill: yes
+    - name: Deteniendo container kong-database
+      docker_container:
+        name: kong-database
+        state: absent
+        force_kill: yes
+    - name: Deteniendo container konga
+      docker_container:
+        name: pantsel/konga
+        state: absent
+        force_kill: yes

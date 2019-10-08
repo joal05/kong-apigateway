@@ -1,0 +1,76 @@
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: consultar api administrativa
+      uri: url=http://localhost:8001
+      return_content: yes
+
+    - name: registrar usuario admin
+      uri:
+        url: http://localhost:8001/consumers
+        method: POST
+        body:
+          username: admin-kong
+        body_format: json
+        status_code: 201, 409
+
+    - name: Registrar servicio de api administrativa
+      uri:
+        url: http://localhost:8001/services
+        method: POST
+        body:
+          name: admin-api
+          host: localhost
+          port: 8001
+        body_format: json
+        status_code: 201, 409
+
+    - name: Registrar ruta de api administrativa
+      uri:
+        url: http://localhost:8001/services/admin-api/routes
+        method: POST
+        body:
+          name: admin-api
+          paths: [/admin-api]
+          methods: [GET, POST, PUT, PATCH, DELETE]
+        body_format: json
+        status_code: 201, 409
+
+    - name: agregar plugin acl a usuario administrador
+      uri:
+        url: http://localhost:8001/consumers/admin-kong/acls
+        method: POST
+        body:
+          group: administrador
+        body_format: json
+        status_code: 201, 409
+
+    - name: agregar plugin jwt a usuario administrador
+      uri:
+        url: http://localhost:8001/consumers/admin-kong/jwt
+        method: POST
+        body:
+          key: SbyM8nt6PR8OSKbxCXuMk3hQQsY8Wp12
+          secret: 6FHTI33WoWjVPcEbISUIceU2o7DwOaph
+        body_format: json
+        status_code: 201, 409
+
+    - name: agregar plugin jwt a servicio
+      uri:
+        url: http://localhost:8001/services/admin-api/plugins
+        method: POST
+        body:
+          name: jwt
+        body_format: json
+        status_code: 201, 409
+
+    - name: agregar plugin acl a servicio
+      uri:
+        url: http://localhost:8001/services/admin-api/plugins
+        method: POST
+        body:
+          name: acl
+          config:
+            whitelist: [administrador]
+        body_format: json
+        status_code: 201, 409

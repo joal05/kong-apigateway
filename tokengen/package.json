@@ -1,0 +1,20 @@
+{
+  "name": "token",
+  "version": "1.0.0",
+  "description": "El consumo de servicios y la administración de la plataforma estan debidamente asegurados y requieren una autenticacíon via tokens utilizando la información provista por el administrador (key, secret).",
+  "main": "token.js",
+  "dependencies": {
+    "colors": "^1.3.3",
+    "gradient-string": "^1.2.0",
+    "inquirer": "^6.2.2",
+    "inquirer-datepicker-prompt": "^0.4.2",
+    "jsonwebtoken": "^8.5.0",
+    "moment": "^2.24.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

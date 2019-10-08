@@ -1,0 +1,99 @@
+- hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+  ## TAREAS PARA PERMITIR A ANSIBLE EJECUTAR COMANDOS DOCKER
+    - name: instalar pip
+      apt: name=python-pip state=present
+
+    - name: install docker-py
+      pip: name=docker-py state=present
+
+  ## TAREAS PARA CREAR LA INSTANCIA DE BASE DE DATOS
+    - name: Importar imagen postgres
+      docker_image:
+        name: postgres:9.6
+
+    - name: Crear red temporal
+      docker_network:
+        name: kong-net
+
+    - name: Crear instancia temporal de bases de datos
+      docker_container:
+        image: postgres:9.6
+        name: kong-database
+        env:
+          POSTGRES_USER: kong
+          POSTGRES_DB: kong
+        networks:
+          - name: kong-net
+        ports:
+          - "5432:5432"
+
+    - name: esperar disponibilidad de base de datos
+      wait_for:
+        host: 172.17.0.1
+        port: 5432
+        state: started
+        delay: 5
+        connect_timeout: 15
+        timeout: 30
+
+    ## TAREAS PARA CREAR LA INSTANCIA DE KONG 1.1.0
+
+    - name: importar imagen docker kong
+      docker_image:
+        name: kong:1.1.0
+
+    - name: Ejecutar migraciones kong a base de datos
+      docker_container:
+        name: kong-migrations
+        image: kong:1.1.0
+        cleanup: yes
+        detach: false
+        env:
+          KONG_DATABASE: postgres
+          KONG_PG_HOST: kong-database
+        networks:
+          - name: kong-net
+        command: kong migrations bootstrap
+
+    - name: Crear una instancia kong de prueba
+      docker_container:
+        name: kong
+        image: kong:1.1.0
+        env:
+          KONG_DATABASE: postgres
+          KONG_PG_HOST: kong-database
+          KONG_PROXY_ACCESS_LOG: /dev/stdout
+          KONG_ADMIN_ACCESS_LOG: /dev/stdout
+          KONG_PROXY_ERROR_LOG: /dev/stderr
+          KONG_ADMIN_ERROR_LOG: /dev/stderr
+          KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
+        # command: luarocks install kong-plugin-proxy-cache, kong migrations bootstrap
+        ports:
+          - "8000:8000"
+          - "8443:8443"
+          - "8001:8001"
+          - "8444:8444"
+        networks:
+          - name: kong-net
+
+    ## TAREAS PARA CREAR UNA INSTANCIA KONGA
+
+    - name: importar imagen konga
+      docker_image:
+        name: pantsel/konga
+    - name: Crear instancia konga de prueba
+      docker_container:
+        name: konga-cloud
+        image: pantsel/konga
+        env:
+          NODE_ENV: development
+        ports:
+          - "1337:1337"
+        networks:
+          - name: kong-net
+
+
+
